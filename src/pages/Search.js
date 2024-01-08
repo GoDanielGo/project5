@@ -1,3 +1,4 @@
+import { Outlet, useNavigate } from "react-router-dom";
 import SearchResult from "../component/SearchResult";
 import "./Search.module.css";
 
@@ -9,6 +10,7 @@ function Search({
   searchByName,
   searchResult,
 }) {
+  const navigate = useNavigate();
   return (
     <div className="container">
       <select name="searchBy" value={searchBy} onChange={handlerChangeSearch}>
@@ -22,7 +24,16 @@ function Search({
         label="Search By Food Name"
         onChange={handlerChangeName}
       />{" "}
-      <button onClick={searchByName}>search</button>
+      <button
+        onClick={() => {
+          searchByName();
+          navigate("/search");
+        }}
+      >
+        search
+      </button>
+      <br />
+      <Outlet />
       {searchResult === null && <h1>No Recipe found!</h1>}
       {searchResult && (
         <div className="search-container">

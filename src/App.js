@@ -4,6 +4,8 @@ import Search from "./pages/Search";
 import RootLayout from "./Layout/RootLayout";
 import { useState } from "react";
 import api from "./api/api";
+import DisplayRecipe from "./component/DisplayRecipe";
+import SearchResult from "./component/SearchResult";
 
 function App() {
   const [searchBy, setSearchBy] = useState("search.php?s=");
@@ -37,7 +39,7 @@ function App() {
       <Routes>
         <Route path="/" element={<RootLayout />}>
           <Route
-            path="Search"
+            path="search"
             element={
               <Search
                 searchBy={searchBy}
@@ -48,7 +50,12 @@ function App() {
                 searchByName={searchByName}
               />
             }
-          ></Route>
+          >
+            <Route
+              path=":idMeal"
+              element={<DisplayRecipe searchResult={searchResult} />}
+            />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
