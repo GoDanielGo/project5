@@ -1,59 +1,17 @@
-import { useState } from "react";
 import "./App.css";
-import api from "./api/api";
-import SearchResult from "./component/SearchResult";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Search from "./pages/Search";
+import RootLayout from "./Layout/RootLayout";
 
 function App() {
-  const [searchBy, setSearchBy] = useState("s");
-  const [foodName, setFoodName] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
-
-  const handlerChangeName = (event) => {
-    setFoodName(event.target.value);
-  };
-
-  const handlerChangeSearch = (event) => {
-    setSearchBy(event.target.value);
-    setFoodName("");
-  };
-
-  const searchByName = async () => {
-    try {
-      const response = await api.get(`${searchBy}${foodName}`);
-      console.log(response);
-      setSearchResult(response.data.meals);
-      console.log(response.data.meals);
-    } catch (error) {
-      console.log("error", error.message);
-    } finally {
-      console.log("done");
-    }
-  };
-
   return (
-    <div className="App">
-      <h1>react</h1>
-      <select name="searchBy" value={searchBy} onChange={handlerChangeSearch}>
-        <option value="search.php?s=">Search By Name</option>
-        <option value="filter.php?i=">Search By ingeredient</option>
-        <option value="filter.php?c=">Search By Category</option>
-      </select>
-      <input
-        type="text"
-        value={foodName}
-        label="Search By Food Name"
-        onChange={handlerChangeName}
-      />
-      <button onClick={searchByName}>search</button>
-      {searchResult === null && <h1>No Recipe found!</h1>}
-      {searchResult && (
-        <div className="search-container">
-          <div className="topics-container">
-            <SearchResult searchResult={searchResult} />
-          </div>
-        </div>
-      )}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<RootLayout />}>
+          <Route path="Search" element={<Search />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

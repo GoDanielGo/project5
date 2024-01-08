@@ -2,7 +2,7 @@ function SearchResult({ searchResult }) {
   return (
     <>
       {searchResult.map((item) => (
-        <div className="topic">
+        <div className="topic" id={item.idMeal}>
           <h2 className="topic-name">{item.strMeal}</h2>
           <img
             style={{ width: "80%" }}
