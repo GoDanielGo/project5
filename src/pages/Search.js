@@ -1,34 +1,14 @@
 import SearchResult from "../component/SearchResult";
-import api from "../api/api";
-import { useState } from "react";
 import "./Search.module.css";
 
-function Search() {
-  const [searchBy, setSearchBy] = useState("search.php?s=");
-  const [foodName, setFoodName] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
-
-  const handlerChangeName = (event) => {
-    setFoodName(event.target.value);
-  };
-
-  const handlerChangeSearch = (event) => {
-    setSearchBy(event.target.value);
-    setFoodName("");
-  };
-
-  const searchByName = async () => {
-    try {
-      const response = await api.get(`${searchBy}${foodName}`);
-      console.log(response);
-      setSearchResult(response.data.meals);
-      console.log(response.data.meals);
-    } catch (error) {
-      console.log("error", error.message);
-    } finally {
-      console.log("done");
-    }
-  };
+function Search({
+  searchBy,
+  handlerChangeSearch,
+  foodName,
+  handlerChangeName,
+  searchByName,
+  searchResult,
+}) {
   return (
     <div className="container">
       <select name="searchBy" value={searchBy} onChange={handlerChangeSearch}>
