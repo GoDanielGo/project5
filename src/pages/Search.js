@@ -1,6 +1,7 @@
 import SearchResult from "../component/SearchResult";
 import api from "../api/api";
 import { useState } from "react";
+import "./Search.module.css";
 
 function Search() {
   const [searchBy, setSearchBy] = useState("search.php?s=");
