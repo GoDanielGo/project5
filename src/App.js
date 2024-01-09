@@ -5,18 +5,28 @@ import RootLayout from "./Layout/RootLayout";
 import { useState } from "react";
 import api from "./api/api";
 import DisplayRecipe from "./component/DisplayRecipe";
-import SearchResult from "./component/SearchResult";
 
 function App() {
   const [searchBy, setSearchBy] = useState("search.php?s=");
   const [foodName, setFoodName] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [recipeById, setRecipeById] = useState(null);
+  const [recipeLoading, setRecipeLoading] = useState(false);
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
 
   const handlerChangeName = (event) => {
     setFoodName(event.target.value);
   };
 
-  const handlerChangeSearch = (event) => {
+  const handlerChangeSearchBy = (event) => {
     setSearchBy(event.target.value);
     setFoodName("");
   };
@@ -24,13 +34,27 @@ function App() {
   const searchByName = async () => {
     try {
       const response = await api.get(`${searchBy}${foodName}`);
-      console.log(response);
       setSearchResult(response.data.meals);
-      console.log(response.data.meals);
+      console.log("searchResult", response.data.meals);
     } catch (error) {
       console.log("error", error.message);
     } finally {
       console.log("done");
+    }
+  };
+
+  const searchRecipe = async (id) => {
+    try {
+      setRecipeLoading(true);
+      console.log("searchResult idmeal", id);
+      const response = await api.get(`lookup.php?i=${id}`);
+      setRecipeById(response.data.meals[0]);
+      console.log("recipeById", response.data.meals[0]);
+    } catch (error) {
+      console.log("error", error.message);
+    } finally {
+      console.log("searchRecipe done");
+      setRecipeLoading(false);
     }
   };
 
@@ -43,17 +67,26 @@ function App() {
             element={
               <Search
                 searchBy={searchBy}
-                handlerChangeSearch={handlerChangeSearch}
+                handlerChangeSearchBy={handlerChangeSearchBy}
                 handlerChangeName={handlerChangeName}
                 foodName={foodName}
                 searchResult={searchResult}
                 searchByName={searchByName}
+                handleOpenModal={handleOpenModal}
+                searchRecipe={searchRecipe}
               />
             }
           >
             <Route
               path=":idMeal"
-              element={<DisplayRecipe searchResult={searchResult} />}
+              element={
+                <DisplayRecipe
+                  openModal={openModal}
+                  handleCloseModal={handleCloseModal}
+                  recipeLoading={recipeLoading}
+                  recipeById={recipeById}
+                />
+              }
             />
           </Route>
         </Route>

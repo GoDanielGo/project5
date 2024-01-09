@@ -4,16 +4,18 @@ import "./Search.module.css";
 
 function Search({
   searchBy,
-  handlerChangeSearch,
+  handlerChangeSearchBy,
   foodName,
   handlerChangeName,
   searchByName,
   searchResult,
+  handleOpenModal,
+  searchRecipe,
 }) {
   const navigate = useNavigate();
   return (
     <div className="container">
-      <select name="searchBy" value={searchBy} onChange={handlerChangeSearch}>
+      <select name="searchBy" value={searchBy} onChange={handlerChangeSearchBy}>
         <option value="search.php?s=">Search By Name</option>
         <option value="filter.php?i=">Search By ingeredient</option>
         <option value="filter.php?c=">Search By Category</option>
@@ -33,15 +35,19 @@ function Search({
         search
       </button>
       <br />
-      <Outlet />
       {searchResult === null && <h1>No Recipe found!</h1>}
       {searchResult && (
         <div className="search-container">
           <div className="topics-container">
-            <SearchResult searchResult={searchResult} />
+            <SearchResult
+              searchResult={searchResult}
+              handleOpenModal={handleOpenModal}
+              searchRecipe={searchRecipe}
+            />
           </div>
         </div>
       )}
+      <Outlet />
     </div>
   );
 }
