@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
+import styles from "./SearchResult.module.css";
 
 function SearchResult({ searchResult, handleOpenModal, searchRecipe }) {
   return (
     <>
       {searchResult.map((item) => (
-        <div className="topic" key={item.idMeal}>
-          <h2 className="topic-name">{item.strMeal}</h2>
+        <div className={styles.topic} key={item.idMeal}>
+          <h2 className={styles.topicName}>{item.strMeal}</h2>
           <nav>
             <Link to={item.idMeal} key={item.idMeal}>
               <img

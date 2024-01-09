@@ -1,10 +1,17 @@
 .topic {
-  border-bottom: 1px solid #f1f3f5;
   padding-bottom: 20px;
+  overflow: hidden;
 }
-.topic-name {
-  color: #1cb39b;
+.topicName {
+  color: #5f3dc4;
   font-weight: 300;
   font-size: 24px;
   margin-bottom: 26px;
+}
+.topic img {
+  filter: blur(2px);
+  transition: filter 0.3s ease-in-out;
+}
+.topic img:hover {
+  filter: blur(0);
 }

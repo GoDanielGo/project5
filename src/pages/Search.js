@@ -14,26 +14,38 @@ function Search({
 }) {
   const navigate = useNavigate();
   return (
-    <div className="container">
-      <select name="searchBy" value={searchBy} onChange={handlerChangeSearchBy}>
-        <option value="search.php?s=">Search By Name</option>
-        <option value="filter.php?i=">Search By ingeredient</option>
-        <option value="filter.php?c=">Search By Category</option>
-      </select>{" "}
-      <input
-        type="text"
-        value={foodName}
-        label="Search By Food Name"
-        onChange={handlerChangeName}
-      />{" "}
-      <button
-        onClick={() => {
-          searchByName();
-          navigate("/search");
-        }}
-      >
-        search
-      </button>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "column",
+      }}
+    >
+      <span>
+        <select
+          name="searchBy"
+          value={searchBy}
+          onChange={handlerChangeSearchBy}
+        >
+          <option value="search.php?s=">Search By Name</option>
+          <option value="filter.php?i=">Search By Ingeredient</option>
+          <option value="filter.php?c=">Search By Category</option>
+        </select>{" "}
+        <input
+          type="text"
+          value={foodName}
+          label="Search By Food Name"
+          onChange={handlerChangeName}
+        />{" "}
+        <button
+          onClick={() => {
+            searchByName();
+            navigate("/search");
+          }}
+        >
+          Search
+        </button>
+      </span>
       <br />
       {searchResult === null && <h1>No Recipe found!</h1>}
       {searchResult && (

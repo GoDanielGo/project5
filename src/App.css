@@ -6,7 +6,7 @@
 }
 
 .search-container {
-  width: 1200px;
+  width: 80%;
   margin: 0 auto;
   background-color: #fff;
   padding: 60px 80px;
@@ -14,7 +14,7 @@
 
 .topics-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: start;
   row-gap: 30px;
   background-color: #fff;
