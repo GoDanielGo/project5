@@ -11,11 +11,14 @@ function NavBar() {
       <NavLink className={getNavLinkClass} to="/">
         Home
       </NavLink>
-      <NavLink className={getNavLinkClass} to="/about">
+      <NavLink className={getNavLinkClass} to="about">
         About Us
       </NavLink>
-      <NavLink className={getNavLinkClass} to="/search">
+      <NavLink className={getNavLinkClass} to="search">
         Search Receipe
+      </NavLink>
+      <NavLink className={getNavLinkClass} to="favorite">
+        My Favorite Receipe
       </NavLink>
     </nav>
   );

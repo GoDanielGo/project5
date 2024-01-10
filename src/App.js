@@ -5,6 +5,9 @@ import RootLayout from "./Layout/RootLayout";
 import { useState } from "react";
 import api from "./api/api";
 import DisplayRecipe from "./component/DisplayRecipe";
+import Favorite from "./pages/Favorite";
+import About from "./pages/About";
+import Home from "./pages/Home";
 
 function App() {
   const [searchBy, setSearchBy] = useState("search.php?s=");
@@ -29,6 +32,12 @@ function App() {
   const handlerChangeSearchBy = (event) => {
     setSearchBy(event.target.value);
     setFoodName("");
+  };
+
+  const handleClear = () => {
+    setFoodName("");
+    setSearchResult("");
+    setSearchBy("search.php?s=");
   };
 
   const searchByName = async () => {
@@ -62,6 +71,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<RootLayout />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
           <Route
             path="search"
             element={
@@ -74,6 +85,7 @@ function App() {
                 searchByName={searchByName}
                 handleOpenModal={handleOpenModal}
                 searchRecipe={searchRecipe}
+                handleClear={handleClear}
               />
             }
           >
@@ -89,6 +101,7 @@ function App() {
               }
             />
           </Route>
+          <Route path="favorite" element={<Favorite />} />
         </Route>
       </Routes>
     </BrowserRouter>

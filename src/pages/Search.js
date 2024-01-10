@@ -11,6 +11,7 @@ function Search({
   searchResult,
   handleOpenModal,
   searchRecipe,
+  handleClear,
 }) {
   const navigate = useNavigate();
   return (
@@ -45,6 +46,7 @@ function Search({
         >
           Search
         </button>
+        <button onClick={handleClear}>Clear</button>
       </span>
       <br />
       {searchResult === null && <h1>No Recipe found!</h1>}

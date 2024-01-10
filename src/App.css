@@ -8,7 +8,8 @@
 .search-container {
   width: 80%;
   margin: 0 auto;
-  background-color: #fff;
+  background-color: #f9f8fd;
+  border-radius: 8px;
   padding: 60px 80px;
 }
 
@@ -17,5 +18,12 @@
   grid-template-columns: repeat(4, 1fr);
   align-items: start;
   row-gap: 30px;
-  background-color: #fff;
+  background-color: #f9f8fd;
+}
+
+body {
+  font-family: "Rubik", sans-serif;
+  color: #333;
+  background-image: linear-gradient(to right, #e5dbff, #f3f0ff);
+  padding: 10px 20px;
 }
