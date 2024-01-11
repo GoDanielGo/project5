@@ -2,7 +2,7 @@ import Modal from "./Modal";
 
 function DisplayRecipe({
   openModal,
-  handleCloseModal,
+  handlerCloseModal,
   recipeLoading,
   recipeById,
 }) {
@@ -31,7 +31,7 @@ function DisplayRecipe({
               <br />
             </>
             <button onClick={addtoFavorite}>Add to Favorite</button>
-            <button onClick={handleCloseModal}>Close</button>
+            <button onClick={handlerCloseModal}>Close</button>
           </Modal>
         )}
       </div>

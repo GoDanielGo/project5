@@ -20,6 +20,9 @@ function NavBar() {
       <NavLink className={getNavLinkClass} to="favorite">
         My Favorite Receipe
       </NavLink>
+      <NavLink className={getNavLinkClass} to="myrecipe">
+        My Own Recipe
+      </NavLink>
     </nav>
   );
 }

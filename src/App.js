@@ -3,11 +3,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Search from "./pages/Search";
 import RootLayout from "./Layout/RootLayout";
 import { useState } from "react";
-import api from "./api/api";
+import { api, myRecipeApi } from "./api/api";
 import DisplayRecipe from "./component/DisplayRecipe";
 import Favorite from "./pages/Favorite";
 import About from "./pages/About";
 import Home from "./pages/Home";
+import MyRecipe from "./pages/MyRecipe";
 
 function App() {
   const [searchBy, setSearchBy] = useState("search.php?s=");
@@ -17,11 +18,11 @@ function App() {
   const [recipeById, setRecipeById] = useState(null);
   const [recipeLoading, setRecipeLoading] = useState(false);
 
-  const handleCloseModal = () => {
+  const handlerCloseModal = () => {
     setOpenModal(false);
   };
 
-  const handleOpenModal = () => {
+  const handlerOpenModal = () => {
     setOpenModal(true);
   };
 
@@ -34,7 +35,7 @@ function App() {
     setFoodName("");
   };
 
-  const handleClear = () => {
+  const handlerClear = () => {
     setFoodName("");
     setSearchResult("");
     setSearchBy("search.php?s=");
@@ -67,6 +68,17 @@ function App() {
     }
   };
 
+  const handlerAddMyRecipe = async (myRecipe) => {
+    try {
+      const response = await myRecipeApi.post("/myrecipe", myRecipe);
+      console.log(response);
+      alert("Recipe Added");
+    } catch (error) {
+      console.log("Error", error.message);
+    } finally {
+    }
+  };
+
   return (
     <BrowserRouter>
       <Routes>
@@ -83,9 +95,9 @@ function App() {
                 foodName={foodName}
                 searchResult={searchResult}
                 searchByName={searchByName}
-                handleOpenModal={handleOpenModal}
+                handlerOpenModal={handlerOpenModal}
                 searchRecipe={searchRecipe}
-                handleClear={handleClear}
+                handlerClear={handlerClear}
               />
             }
           >
@@ -94,7 +106,7 @@ function App() {
               element={
                 <DisplayRecipe
                   openModal={openModal}
-                  handleCloseModal={handleCloseModal}
+                  handlerCloseModal={handlerCloseModal}
                   recipeLoading={recipeLoading}
                   recipeById={recipeById}
                 />
@@ -102,6 +114,17 @@ function App() {
             />
           </Route>
           <Route path="favorite" element={<Favorite />} />
+          <Route
+            path="myrecipe"
+            element={
+              <MyRecipe
+                handlerAddMyRecipe={handlerAddMyRecipe}
+                openModal={openModal}
+                handlerOpenModal={handlerOpenModal}
+                handlerCloseModal={handlerCloseModal}
+              />
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>

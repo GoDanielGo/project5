@@ -7,6 +7,9 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-const api = axios.create({ baseURL, headers });
+const mockApi = "https://659d12bb633f9aee7908887d.mockapi.io/api/project5";
 
-export default api;
+const api = axios.create({ baseURL, headers });
+const myRecipeApi = axios.create({ baseURL: mockApi, headers });
+
+export { api, myRecipeApi };

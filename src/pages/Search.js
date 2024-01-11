@@ -9,16 +9,15 @@ function Search({
   handlerChangeName,
   searchByName,
   searchResult,
-  handleOpenModal,
+  handlerOpenModal,
   searchRecipe,
-  handleClear,
+  handlerClear,
 }) {
   const navigate = useNavigate();
   return (
     <div
       style={{
         display: "flex",
-        alignItems: "center",
         flexDirection: "column",
       }}
     >
@@ -46,7 +45,7 @@ function Search({
         >
           Search
         </button>
-        <button onClick={handleClear}>Clear</button>
+        <button onClick={handlerClear}>Clear</button>
       </span>
       <br />
       {searchResult === null && <h1>No Recipe found!</h1>}
@@ -55,7 +54,7 @@ function Search({
           <div className="topics-container">
             <SearchResult
               searchResult={searchResult}
-              handleOpenModal={handleOpenModal}
+              handlerOpenModal={handlerOpenModal}
               searchRecipe={searchRecipe}
             />
           </div>

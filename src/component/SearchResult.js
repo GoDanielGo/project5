@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./SearchResult.module.css";
 
-function SearchResult({ searchResult, handleOpenModal, searchRecipe }) {
+function SearchResult({ searchResult, handlerOpenModal, searchRecipe }) {
   return (
     <>
       {searchResult.map((item) => (
@@ -12,7 +12,7 @@ function SearchResult({ searchResult, handleOpenModal, searchRecipe }) {
               <img
                 onClick={() => {
                   searchRecipe(item.idMeal);
-                  handleOpenModal();
+                  handlerOpenModal();
                 }}
                 style={{ width: "80%" }}
                 src={item.strMealThumb}
