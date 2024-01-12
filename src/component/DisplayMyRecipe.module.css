@@ -1,0 +1,14 @@
+.ingredientsContainer {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 10px;
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+
+.ingredientItem {
+  margin: 3px;
+  padding: 8px;
+  border: 1px solid black;
+}

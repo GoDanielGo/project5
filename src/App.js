@@ -2,13 +2,14 @@ import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Search from "./pages/Search";
 import RootLayout from "./Layout/RootLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, myRecipeApi } from "./api/api";
 import DisplayRecipe from "./component/DisplayRecipe";
 import Favorite from "./pages/Favorite";
 import About from "./pages/About";
 import Home from "./pages/Home";
 import MyRecipe from "./pages/MyRecipe";
+import DisplayMyRecipe from "./component/DisplayMyRecipe";
 
 function App() {
   const [searchBy, setSearchBy] = useState("search.php?s=");
@@ -17,6 +18,15 @@ function App() {
   const [openModal, setOpenModal] = useState(false);
   const [recipeById, setRecipeById] = useState(null);
   const [recipeLoading, setRecipeLoading] = useState(false);
+  const [addMyRecipeLoading, setAddMyRecipeLoading] = useState(false);
+  const [myRecipeList, setMyRecipeList] = useState([]);
+  const [myRecipeLoading, setMyRecipeLoading] = useState(false);
+  const [deleteMyRecipeLoading, setDeleteMyRecipeLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  useEffect(() => {
+    console.log("Initial load");
+    handlerClear();
+  }, []);
 
   const handlerCloseModal = () => {
     setOpenModal(false);
@@ -69,13 +79,48 @@ function App() {
   };
 
   const handlerAddMyRecipe = async (myRecipe) => {
+    let addMyRecipeMessage = "";
     try {
+      setAddMyRecipeLoading(true);
       const response = await myRecipeApi.post("/myrecipe", myRecipe);
       console.log(response);
-      alert("Recipe Added");
+      addMyRecipeMessage = "New Recipe added";
+    } catch (error) {
+      addMyRecipeMessage = error.message;
+      alert("Error", error.message);
+    } finally {
+      setAddMyRecipeLoading(false);
+      alert(addMyRecipeMessage);
+      setRefreshKey((prevKey) => prevKey + 1);
+    }
+  };
+
+  const searchMyRecipe = async () => {
+    try {
+      setMyRecipeLoading(true);
+      const response = await myRecipeApi.get("/myrecipe");
+      console.log(response);
+      setMyRecipeList(response.data);
     } catch (error) {
       console.log("Error", error.message);
     } finally {
+      setMyRecipeLoading(false);
+    }
+  };
+
+  const deleteMyRecipe = async (id) => {
+    let deleteMyRecipeMessage = "";
+    try {
+      setDeleteMyRecipeLoading(true);
+      const response = await myRecipeApi.delete("/myrecipe/" + id);
+      deleteMyRecipeMessage = "Recipe Deleted";
+      console.log("delete receipe response", response);
+    } catch (error) {
+      deleteMyRecipeMessage = error.message;
+    } finally {
+      alert(deleteMyRecipeMessage);
+      setRefreshKey((prevKey) => prevKey + 1);
+      setDeleteMyRecipeLoading(false);
     }
   };
 
@@ -122,9 +167,27 @@ function App() {
                 openModal={openModal}
                 handlerOpenModal={handlerOpenModal}
                 handlerCloseModal={handlerCloseModal}
+                addMyRecipeLoading={addMyRecipeLoading}
+                refreshKey={refreshKey}
+                searchMyRecipe={searchMyRecipe}
+                myRecipeList={myRecipeList}
               />
             }
-          />
+          >
+            <Route
+              path=":idMeal"
+              element={
+                <DisplayMyRecipe
+                  openModal={openModal}
+                  handlerCloseModal={handlerCloseModal}
+                  myRecipeList={myRecipeList}
+                  myRecipeLoading={myRecipeLoading}
+                  deleteMyRecipe={deleteMyRecipe}
+                  deleteMyRecipeLoading={deleteMyRecipeLoading}
+                />
+              }
+            />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

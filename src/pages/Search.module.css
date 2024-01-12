@@ -17,3 +17,11 @@ button {
 button:hover {
   background-color: #5f3dc4;
 }
+
+textarea {
+  margin: 5px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

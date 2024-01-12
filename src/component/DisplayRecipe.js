@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
 
 function DisplayRecipe({
@@ -8,6 +9,7 @@ function DisplayRecipe({
 }) {
   console.log("recipeById", recipeById);
   const addtoFavorite = () => console.log("add to favorite clicked");
+  const navigate = useNavigate();
   return (
     <>
       <div
@@ -31,7 +33,14 @@ function DisplayRecipe({
               <br />
             </>
             <button onClick={addtoFavorite}>Add to Favorite</button>
-            <button onClick={handlerCloseModal}>Close</button>
+            <button
+              onClick={() => {
+                handlerCloseModal();
+                navigate("/search");
+              }}
+            >
+              Close
+            </button>
           </Modal>
         )}
       </div>
