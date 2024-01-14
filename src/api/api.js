@@ -11,5 +11,6 @@ const mockApi = "https://659d12bb633f9aee7908887d.mockapi.io/api/project5";
 
 const api = axios.create({ baseURL, headers });
 const myRecipeApi = axios.create({ baseURL: mockApi, headers });
+const myFavouriteApi = axios.create( {baseURL: mockApi, headers})
 
-export { api, myRecipeApi };
+export { api, myRecipeApi, myFavouriteApi };
