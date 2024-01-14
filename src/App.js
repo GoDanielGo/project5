@@ -3,14 +3,15 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Search from "./pages/Search";
 import RootLayout from "./Layout/RootLayout";
 import { useEffect, useState } from "react";
-import { api, myRecipeApi } from "./api/api";
+import { api, myFavouriteApi, myRecipeApi } from "./api/api";
 import DisplayRecipe from "./component/DisplayRecipe";
 import Favorite from "./pages/Favorite";
 import About from "./pages/About";
 import Home from "./pages/Home";
 import MyRecipe from "./pages/MyRecipe";
+import LoginForm from "./component/LoginForm";
 import DisplayMyRecipe from "./component/DisplayMyRecipe";
-
+import DisplayMyFavorite from  "./component/DisplayMyFavorite";
 function App() {
   const [searchBy, setSearchBy] = useState("search.php?s=");
   const [foodName, setFoodName] = useState("");
@@ -19,10 +20,14 @@ function App() {
   const [recipeById, setRecipeById] = useState(null);
   const [recipeLoading, setRecipeLoading] = useState(false);
   const [addMyRecipeLoading, setAddMyRecipeLoading] = useState(false);
+  const [addMyFavouriteLoading, setAddMyFavouriteLoading] = useState(false);
   const [myRecipeList, setMyRecipeList] = useState([]);
   const [myRecipeLoading, setMyRecipeLoading] = useState(false);
   const [deleteMyRecipeLoading, setDeleteMyRecipeLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [myFavoriteList, setMyFavoriteList] = useState([]);
+  const [deleteMyFavoriteLoading, setDeleteMyFavoriteLoading] = useState(false);
+
   useEffect(() => {
     console.log("Initial load");
     handlerClear();
@@ -95,6 +100,21 @@ function App() {
     }
   };
 
+  
+
+  const getMyFavourite = async () => {
+    try {
+      setMyRecipeLoading(true);
+      const response = await myRecipeApi.get("/favorites");
+      console.log("getMyFavorite",response);
+      setMyFavoriteList(response.data);
+    } catch (error) {
+      console.log("Error", error.message);
+    } finally {
+      setMyRecipeLoading(false);
+    }
+  };
+
   const searchMyRecipe = async () => {
     try {
       setMyRecipeLoading(true);
@@ -121,6 +141,22 @@ function App() {
       alert(deleteMyRecipeMessage);
       setRefreshKey((prevKey) => prevKey + 1);
       setDeleteMyRecipeLoading(false);
+    }
+  };
+
+  const deleteMyFavorite = async (id) => {
+    let deleteMyFavoriteMessage = "";
+    try {
+      setDeleteMyFavoriteLoading(true);
+      const response = await myRecipeApi.delete("/favorites/" + id);
+      deleteMyFavoriteMessage = "Favorite Recipe Deleted";
+      console.log("delete Favorite receipe response", response);
+    } catch (error) {
+      deleteMyFavoriteMessage = error.message;
+    } finally {
+      alert(deleteMyFavoriteMessage);
+      setRefreshKey((prevKey) => prevKey + 1);
+      setDeleteMyFavoriteLoading(false);
     }
   };
 
@@ -158,7 +194,36 @@ function App() {
               }
             />
           </Route>
-          <Route path="favorite" element={<Favorite />} />
+          {/* <Route path="favorite" element={<Favorite />} /> */}
+          <Route
+              path="favorite"
+              element={
+                <Favorite
+                  getMyFavourite={getMyFavourite}
+                  // addMyFavouriteLoading={addMyFavouriteLoading}
+                  openModal={openModal}
+                  handlerOpenModal={handlerOpenModal}
+                  handlerCloseModal={handlerCloseModal}
+                  refreshKey={refreshKey}                  
+                  myFavoriteList={myFavoriteList}
+                />
+              }
+            >
+              <Route
+              path=":idMeal"
+              element={
+                <DisplayMyFavorite
+                  openModal={openModal}
+                  handlerCloseModal={handlerCloseModal}
+                  recipeLoading={recipeLoading}
+                  myFavoriteList={myFavoriteList}
+                  deleteMyFavorite={deleteMyFavorite}
+
+                />
+              }
+            />
+
+            </Route>
           <Route
             path="myrecipe"
             element={
@@ -173,7 +238,7 @@ function App() {
                 myRecipeList={myRecipeList}
               />
             }
-          >
+          >           
             <Route
               path=":idMeal"
               element={
@@ -188,6 +253,7 @@ function App() {
               }
             />
           </Route>
+          <Route path="login" element={<LoginForm />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
