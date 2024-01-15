@@ -10,4 +10,14 @@ const Modal = ({ openModal, children }) => {
   );
 };
 
-export default Modal;
+const EditModal = ({ openEditModal, children }) => {
+  if (!openEditModal) return null;
+
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBox}>{children}</div>
+    </div>
+  );
+};
+
+export { Modal, EditModal };

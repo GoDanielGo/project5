@@ -1,11 +1,17 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./NavBar.module.css";
 
 function getNavLinkClass({ isActive }) {
   return isActive ? styles.navItemActive : styles.navItem;
 }
 
-function NavBar() {
+function NavBar({ setIsLogin }) {
+  const navigate = useNavigate();
+  const handleLogOut = () => {
+    setIsLogin(false);
+    alert("see you again");
+    navigate("/");
+  };
   return (
     <nav className={styles.navContainer}>
       <NavLink className={getNavLinkClass} to="/">
@@ -23,10 +29,13 @@ function NavBar() {
       <NavLink className={getNavLinkClass} to="myrecipe">
         My Own Recipe
       </NavLink>
-      <NavLink className={getNavLinkClass} to="login">
-        Login
-      </NavLink>
-     
+      <button
+        onClick={() => {
+          handleLogOut();
+        }}
+      >
+        LOGOUT
+      </button>
     </nav>
   );
 }

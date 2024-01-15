@@ -20,7 +20,6 @@ function SearchResult({ searchResult, handlerOpenModal, searchRecipe }) {
               />
             </Link>
           </nav>
-          
         </div>
       ))}
     </>

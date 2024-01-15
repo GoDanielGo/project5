@@ -5,10 +5,10 @@ function Main({ children }) {
   return <div style={{ padding: 20 }}>{children}</div>;
 }
 
-function RootLayout() {
+function RootLayout({ setIsLogin }) {
   return (
     <div>
-      <NavBar />
+      <NavBar setIsLogin={setIsLogin} />
       <Main>
         <Outlet />
       </Main>

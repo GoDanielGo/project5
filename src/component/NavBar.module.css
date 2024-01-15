@@ -11,6 +11,7 @@
   border: 1px solid #e5dbff;
   text-transform: uppercase;
   font-weight: 700;
+  position: relative;
 }
 
 .navItem {

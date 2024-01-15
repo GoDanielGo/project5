@@ -1,16 +1,17 @@
 import styles from "./SearchResult.module.css";
 import { Link } from "react-router-dom";
 
-function myFavoriteList({ myFavoriteList, handlerOpenModal }) {
+function myFavoriteList({ myFavoriteList, handlerOpenModal, searchRecipe }) {
   return (
     <>
       {myFavoriteList.map((item) => (
-        <div className={styles.topic} key={item.idMeal}>
+        <div className={styles.topic} key={item.id}>
           <h2 className={styles.topicName}>{item.strMeal}</h2>
           <nav>
-            <Link to={item.idMeal} key={item.idMeal}>
+            <Link to={item.id} key={item.id}>
               <img
-                onClick={() => {
+                onClick={async () => {
+                  await searchRecipe(item.idMeal);
                   handlerOpenModal();
                 }}
                 style={{ width: "80%" }}

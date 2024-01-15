@@ -3,15 +3,33 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Search from "./pages/Search";
 import RootLayout from "./Layout/RootLayout";
 import { useEffect, useState } from "react";
-import { api, myFavouriteApi, myRecipeApi } from "./api/api";
+import { api, myRecipeApi } from "./api/api";
 import DisplayRecipe from "./component/DisplayRecipe";
 import Favorite from "./pages/Favorite";
 import About from "./pages/About";
 import Home from "./pages/Home";
 import MyRecipe from "./pages/MyRecipe";
-import LoginForm from "./component/LoginForm";
 import DisplayMyRecipe from "./component/DisplayMyRecipe";
-import DisplayMyFavorite from  "./component/DisplayMyFavorite";
+import DisplayMyFavorite from "./component/DisplayMyFavorite";
+import Login from "./pages/Login";
+
+const initialRecipeState = {
+  strMeal: "",
+  strMealThumb: "",
+  strIngredient1: "",
+  strIngredient2: "",
+  strIngredient3: "",
+  strIngredient4: "",
+  strIngredient5: "",
+  strIngredient6: "",
+  strIngredient7: "",
+  strIngredient8: "",
+  strIngredient9: "",
+  strIngredient10: "",
+  strInstructions: "",
+  idMeal: "",
+};
+
 function App() {
   const [searchBy, setSearchBy] = useState("search.php?s=");
   const [foodName, setFoodName] = useState("");
@@ -22,11 +40,16 @@ function App() {
   const [addMyRecipeLoading, setAddMyRecipeLoading] = useState(false);
   const [addMyFavouriteLoading, setAddMyFavouriteLoading] = useState(false);
   const [myRecipeList, setMyRecipeList] = useState([]);
-  const [myRecipeLoading, setMyRecipeLoading] = useState(false);
   const [deleteMyRecipeLoading, setDeleteMyRecipeLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [myFavoriteList, setMyFavoriteList] = useState([]);
   const [deleteMyFavoriteLoading, setDeleteMyFavoriteLoading] = useState(false);
+  const [myRecipe, setMyRecipe] = useState(initialRecipeState);
+  const [formStatus, setFormStatus] = useState(false);
+  const [form, setForm] = useState(initialRecipeState);
+  const [editLoading, setEditLoading] = useState(false);
+  const [displayLoading, setDisplayLoading] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
     console.log("Initial load");
@@ -56,39 +79,50 @@ function App() {
     setSearchBy("search.php?s=");
   };
 
+  const handlerFormStatus = (status) => setFormStatus(status);
+
   const searchByName = async () => {
     try {
+      setDisplayLoading(true);
       const response = await api.get(`${searchBy}${foodName}`);
       setSearchResult(response.data.meals);
-      console.log("searchResult", response.data.meals);
     } catch (error) {
       console.log("error", error.message);
     } finally {
-      console.log("done");
+      setDisplayLoading(false);
     }
   };
 
   const searchRecipe = async (id) => {
     try {
       setRecipeLoading(true);
-      console.log("searchResult idmeal", id);
       const response = await api.get(`lookup.php?i=${id}`);
       setRecipeById(response.data.meals[0]);
-      console.log("recipeById", response.data.meals[0]);
     } catch (error) {
       console.log("error", error.message);
     } finally {
-      console.log("searchRecipe done");
       setRecipeLoading(false);
     }
+  };
+
+  const handlerRecipeChange = (event) => {
+    setMyRecipe((prevState) => {
+      return { ...prevState, [event.target.name]: event.target.value };
+    });
+  };
+
+  const handlerSubmit = async (event) => {
+    event.preventDefault();
+    await handlerAddMyRecipe(myRecipe);
+    setMyRecipe(initialRecipeState);
+    !addMyRecipeLoading && handlerFormStatus(false);
   };
 
   const handlerAddMyRecipe = async (myRecipe) => {
     let addMyRecipeMessage = "";
     try {
       setAddMyRecipeLoading(true);
-      const response = await myRecipeApi.post("/myrecipe", myRecipe);
-      console.log(response);
+      await myRecipeApi.post("/myrecipe", myRecipe);
       addMyRecipeMessage = "New Recipe added";
     } catch (error) {
       addMyRecipeMessage = error.message;
@@ -100,31 +134,27 @@ function App() {
     }
   };
 
-  
-
   const getMyFavourite = async () => {
     try {
-      setMyRecipeLoading(true);
+      setDisplayLoading(true);
       const response = await myRecipeApi.get("/favorites");
-      console.log("getMyFavorite",response);
       setMyFavoriteList(response.data);
     } catch (error) {
       console.log("Error", error.message);
     } finally {
-      setMyRecipeLoading(false);
+      setDisplayLoading(false);
     }
   };
 
   const searchMyRecipe = async () => {
     try {
-      setMyRecipeLoading(true);
+      setDisplayLoading(true);
       const response = await myRecipeApi.get("/myrecipe");
-      console.log(response);
       setMyRecipeList(response.data);
     } catch (error) {
       console.log("Error", error.message);
     } finally {
-      setMyRecipeLoading(false);
+      setDisplayLoading(false);
     }
   };
 
@@ -132,9 +162,8 @@ function App() {
     let deleteMyRecipeMessage = "";
     try {
       setDeleteMyRecipeLoading(true);
-      const response = await myRecipeApi.delete("/myrecipe/" + id);
+      await myRecipeApi.delete("/myrecipe/" + id);
       deleteMyRecipeMessage = "Recipe Deleted";
-      console.log("delete receipe response", response);
     } catch (error) {
       deleteMyRecipeMessage = error.message;
     } finally {
@@ -144,13 +173,84 @@ function App() {
     }
   };
 
+  const handlerDisplayMyRecipe = (id) => {
+    const selectMyRecipe = myRecipeList.find((item) => item.idMeal === id);
+    setRecipeById(selectMyRecipe);
+  };
+
+  const handlerAddMyFavourite = async () => {
+    let addMyFavouriteMessage = "";
+    try {
+      setAddMyFavouriteLoading(true);
+      const favoriteList = {
+        strMeal: recipeById.strMeal,
+        strMealThumb: recipeById.strMealThumb,
+        idMeal: recipeById.idMeal,
+      };
+      await myRecipeApi.post("/favorites", favoriteList);
+      addMyFavouriteMessage =
+        "Recipe has been added to My Favorite Recipe List";
+    } catch (error) {
+      addMyFavouriteMessage = error.message;
+      alert("Error", error.message);
+    } finally {
+      setAddMyFavouriteLoading(false);
+      alert(addMyFavouriteMessage);
+    }
+  };
+
+  const handlerEditMyRecipe = (recipeById) => {
+    const editValues = {
+      idMeal: recipeById.idMeal,
+      strMeal: recipeById.strMeal,
+      strMealThumb: recipeById.strMealThumb,
+      strIngredient1: recipeById.strIngredient1,
+      strIngredient2: recipeById.strIngredient2,
+      strIngredient3: recipeById.strIngredient3,
+      strIngredient4: recipeById.strIngredient4,
+      strIngredient5: recipeById.strIngredient5,
+      strIngredient6: recipeById.strIngredient6,
+      strIngredient7: recipeById.strIngredient7,
+      strIngredient8: recipeById.strIngredient8,
+      strIngredient9: recipeById.strIngredient9,
+      strIngredient10: recipeById.strIngredient10,
+      strInstructions: recipeById.strInstructions,
+    };
+    setForm(editValues);
+  };
+
+  const handlerUpdateMyRecipe = (event, key) => {
+    const values = event.target.value;
+    const updatedForm = { ...form, [key]: values };
+    setForm(updatedForm);
+  };
+
+  const handlerSubmitUpdateMyRecipe = async (id) => {
+    let editLoadingMessage = "";
+    try {
+      setEditLoading(true);
+      await myRecipeApi.put("/myrecipe/" + id, form);
+      setRecipeById((prevState) => ({
+        ...prevState,
+        ...form,
+      }));
+      editLoadingMessage = "Recipe has been updated";
+    } catch (error) {
+      editLoadingMessage = error.message;
+    } finally {
+      setEditLoading(false);
+      alert(editLoadingMessage);
+      setRefreshKey((prevKey) => prevKey + 1);
+    }
+  };
+
   const deleteMyFavorite = async (id) => {
     let deleteMyFavoriteMessage = "";
     try {
       setDeleteMyFavoriteLoading(true);
-      const response = await myRecipeApi.delete("/favorites/" + id);
-      deleteMyFavoriteMessage = "Favorite Recipe Deleted";
-      console.log("delete Favorite receipe response", response);
+      await myRecipeApi.delete("/favorites/" + id);
+      deleteMyFavoriteMessage =
+        "Recipe has been deleted from My Favorite Recipe List";
     } catch (error) {
       deleteMyFavoriteMessage = error.message;
     } finally {
@@ -163,8 +263,17 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<RootLayout />}>
-          <Route index element={<Home />} />
+        <Route
+          path="/"
+          element={
+            isLogin ? (
+              <RootLayout setIsLogin={setIsLogin} />
+            ) : (
+              <Login setIsLogin={setIsLogin} />
+            )
+          }
+        >
+          <Route index element={isLogin ? <Home /> : null} />
           <Route path="about" element={<About />} />
           <Route
             path="search"
@@ -179,6 +288,7 @@ function App() {
                 handlerOpenModal={handlerOpenModal}
                 searchRecipe={searchRecipe}
                 handlerClear={handlerClear}
+                displayLoading={displayLoading}
               />
             }
           >
@@ -190,27 +300,28 @@ function App() {
                   handlerCloseModal={handlerCloseModal}
                   recipeLoading={recipeLoading}
                   recipeById={recipeById}
+                  handlerAddMyFavourite={handlerAddMyFavourite}
+                  addMyFavouriteLoading={addMyFavouriteLoading}
                 />
               }
             />
           </Route>
           {/* <Route path="favorite" element={<Favorite />} /> */}
           <Route
-              path="favorite"
-              element={
-                <Favorite
-                  getMyFavourite={getMyFavourite}
-                  // addMyFavouriteLoading={addMyFavouriteLoading}
-                  openModal={openModal}
-                  handlerOpenModal={handlerOpenModal}
-                  handlerCloseModal={handlerCloseModal}
-                  refreshKey={refreshKey}                  
-                  myFavoriteList={myFavoriteList}
-                />
-              }
-            >
-              <Route
-              path=":idMeal"
+            path="favorite"
+            element={
+              <Favorite
+                getMyFavourite={getMyFavourite}
+                handlerOpenModal={handlerOpenModal}
+                refreshKey={refreshKey}
+                myFavoriteList={myFavoriteList}
+                searchRecipe={searchRecipe}
+                displayLoading={displayLoading}
+              />
+            }
+          >
+            <Route
+              path=":id"
               element={
                 <DisplayMyFavorite
                   openModal={openModal}
@@ -218,12 +329,12 @@ function App() {
                   recipeLoading={recipeLoading}
                   myFavoriteList={myFavoriteList}
                   deleteMyFavorite={deleteMyFavorite}
-
+                  recipeById={recipeById}
+                  deleteMyFavoriteLoading={deleteMyFavoriteLoading}
                 />
               }
             />
-
-            </Route>
+          </Route>
           <Route
             path="myrecipe"
             element={
@@ -236,9 +347,16 @@ function App() {
                 refreshKey={refreshKey}
                 searchMyRecipe={searchMyRecipe}
                 myRecipeList={myRecipeList}
+                handlerRecipeChange={handlerRecipeChange}
+                handlerSubmit={handlerSubmit}
+                myRecipe={myRecipe}
+                handlerFormStatus={handlerFormStatus}
+                formStatus={formStatus}
+                handlerDisplayMyRecipe={handlerDisplayMyRecipe}
+                displayLoading={displayLoading}
               />
             }
-          >           
+          >
             <Route
               path=":idMeal"
               element={
@@ -246,14 +364,19 @@ function App() {
                   openModal={openModal}
                   handlerCloseModal={handlerCloseModal}
                   myRecipeList={myRecipeList}
-                  myRecipeLoading={myRecipeLoading}
                   deleteMyRecipe={deleteMyRecipe}
                   deleteMyRecipeLoading={deleteMyRecipeLoading}
+                  handlerUpdateMyRecipe={handlerUpdateMyRecipe}
+                  recipeById={recipeById}
+                  handlerEditMyRecipe={handlerEditMyRecipe}
+                  form={form}
+                  handlerSubmitUpdateMyRecipe={handlerSubmitUpdateMyRecipe}
+                  editLoading={editLoading}
                 />
               }
             />
           </Route>
-          <Route path="login" element={<LoginForm />}></Route>
+          <Route path="login" element={<Login />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

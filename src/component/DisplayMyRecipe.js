@@ -1,36 +1,47 @@
-import { useNavigate, useParams } from "react-router-dom";
-import Modal from "./Modal";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "./Modal";
 import styles from "./DisplayMyRecipe.module.css";
 import { BeatLoader } from "react-spinners";
+import EditMyRecipe from "./EditMyRecipe";
+import { useEffect, useState } from "react";
 
 function DisplayMyRecipe({
   openModal,
   handlerCloseModal,
-  myRecipeList,
   deleteMyRecipe,
   deleteMyRecipeLoading,
+  handlerUpdateMyRecipe,
+  handlerEditMyRecipe,
+  form,
+  recipeById,
+  handlerSubmitUpdateMyRecipe,
+  editLoading,
 }) {
-  const { idMeal } = useParams();
-  console.log(myRecipeList);
-  console.log(idMeal);
-  const recipeById = myRecipeList.find((item) => item.idMeal === idMeal);
-  console.log(recipeById);
-  const navigate = useNavigate();
-  let ingredients = [];
-  const filterIngerdients = (recipeById) => {
-    for (let i = 1; i <= 10; i++) {
-      const ingredientKey = "strIngredient" + i;
-      if (
-        (recipeById[ingredientKey] !== null) &
-        (recipeById[ingredientKey] !== "")
-      ) {
-        ingredients.push(recipeById[ingredientKey]);
-      }
-    }
-    return ingredients;
-  };
+  const [editRecipe, setEditRecipe] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [ingredients, setMyIngredients] = useState([]);
 
-  console.log("ingredients", filterIngerdients(recipeById));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!editLoading && recipeById) {
+      let newIngredients = [];
+      for (let i = 1; i <= 10; i++) {
+        const ingredientKey = "strIngredient" + i;
+        if (
+          recipeById[ingredientKey] !== null &&
+          recipeById[ingredientKey] !== ""
+        ) {
+          newIngredients.push(recipeById[ingredientKey]);
+        }
+      }
+      setMyIngredients(newIngredients);
+    }
+  }, [recipeById, editLoading]);
+
+  const handlerOpenEditModal = () => setOpenEditModal(true);
+
+  // console.log("ingredients", filterIngerdients(recipeById));
   return (
     <div
       style={{
@@ -77,7 +88,15 @@ function DisplayMyRecipe({
         )}
         {!deleteMyRecipeLoading && (
           <>
-            <button>Edit</button>
+            <button
+              onClick={() => {
+                setEditRecipe(true);
+                handlerEditMyRecipe(recipeById);
+                handlerOpenEditModal();
+              }}
+            >
+              Edit
+            </button>
             <button
               onClick={async () => {
                 await deleteMyRecipe(recipeById.idMeal);
@@ -100,6 +119,16 @@ function DisplayMyRecipe({
           </>
         )}
       </Modal>
+      {editRecipe && (
+        <EditMyRecipe
+          openEditModal={openEditModal}
+          setOpenEditModal={setOpenEditModal}
+          handlerUpdateMyRecipe={handlerUpdateMyRecipe}
+          form={form}
+          handlerSubmitUpdateMyRecipe={handlerSubmitUpdateMyRecipe}
+          editLoading={editLoading}
+        />
+      )}
     </div>
   );
 }

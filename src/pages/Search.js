@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import SearchResult from "../component/SearchResult";
 import "./Search.module.css";
-
+import { BeatLoader } from "react-spinners";
 function Search({
   searchBy,
   handlerChangeSearchBy,
@@ -12,6 +12,7 @@ function Search({
   handlerOpenModal,
   searchRecipe,
   handlerClear,
+  displayLoading,
 }) {
   const navigate = useNavigate();
   return (
@@ -48,6 +49,14 @@ function Search({
         <button onClick={handlerClear}>Clear</button>
       </span>
       <br />
+      <div
+        style={{
+          justifyContent: "center",
+          display: "flex",
+        }}
+      >
+        {displayLoading && <BeatLoader color="#5f3dc4" />}
+      </div>
       {searchResult === null && <h1>No Recipe found!</h1>}
       {searchResult && (
         <div className="search-container">

@@ -1,36 +1,43 @@
 import { Outlet } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MyFavoriteList from "../component/MyFavoriteList";
+import { BeatLoader } from "react-spinners";
+
 function Favorite({
   myFavoriteList,
   getMyFavourite,
-  openModal,
   handlerOpenModal,
-  handlerCloseModal,
   refreshKey,
-  myRecipeListLoading
+  searchRecipe,
+  displayLoading,
 }) {
-  const [formStatus, setFormStatus] = useState(false);
   useEffect(() => {
-    console.log("useEffect Running");
     getMyFavourite();
-    console.log(myFavoriteList);
   }, [refreshKey]);
-  const handlerFormStatus = (status) => setFormStatus(status);
-  return(
-  <>
-    <h1>My Favorites</h1>
-    {!myRecipeListLoading && (
-    <div className="search-container">
+
+  return (
+    <>
+      <div
+        style={{
+          justifyContent: "center",
+          display: "flex",
+        }}
+      >
+        {displayLoading && <BeatLoader color="#5f3dc4" />}
+      </div>
+      {!displayLoading && (
+        <div className="search-container">
           <div className="topics-container">
             <MyFavoriteList
               myFavoriteList={myFavoriteList}
               handlerOpenModal={handlerOpenModal}
+              searchRecipe={searchRecipe}
             />
           </div>
-        </div>)}
-    <Outlet />
-  </>
+        </div>
+      )}
+      <Outlet />
+    </>
   );
 }
 

@@ -1,7 +1,11 @@
 import styles from "./SearchResult.module.css";
 import { Link } from "react-router-dom";
 
-function MyRecipeList({ myRecipeList, handlerOpenModal }) {
+function MyRecipeList({
+  myRecipeList,
+  handlerOpenModal,
+  handlerDisplayMyRecipe,
+}) {
   return (
     <>
       {myRecipeList.map((item) => (
@@ -12,6 +16,7 @@ function MyRecipeList({ myRecipeList, handlerOpenModal }) {
               <img
                 onClick={() => {
                   handlerOpenModal();
+                  handlerDisplayMyRecipe(item.idMeal);
                 }}
                 style={{ width: "80%" }}
                 src={

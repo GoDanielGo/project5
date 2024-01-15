@@ -1,43 +1,37 @@
 import { useNavigate } from "react-router-dom";
-import Modal from "./Modal";
-import { myRecipeApi } from "../api/api";
-
-
+import { Modal } from "./Modal";
+import { useEffect, useState } from "react";
+import styles from "./DisplayMyRecipe.module.css";
+import { BeatLoader } from "react-spinners";
 
 function DisplayRecipe({
   openModal,
   handlerCloseModal,
-  // handlerAddMyFavourite,
   recipeLoading,
   recipeById,
+  handlerAddMyFavourite,
+  addMyFavouriteLoading,
 }) {
-  console.log("recipeById", recipeById);
+  const [ingredients, setMyIngredients] = useState([]);
 
- 
-  
-  // () => console.log("add to favorite clicked");
-  const handlerAddMyFavourite = async () => {
-    
-    let addMyFavouriteMessage = "";
-    try {
-      // setAddMyFavouriteLoading(true);
-      let favoriteList = {
-        strMeal: recipeById.strMeal,
-        strMealThumb: recipeById.strMealThumb,
-        idMeal: recipeById.idMeal,
-      };
-      const response = await myRecipeApi.post("/favorites", favoriteList);
-      console.log(response);
-      addMyFavouriteMessage = "New Favourite has been added";
-    } catch (error) {
-      addMyFavouriteMessage = error.message;
-      alert("Error", error.message);
-    } finally {
-      // setAddMyFavouriteLoading(false);
-      alert(addMyFavouriteMessage);
-      // setRefreshKey((prevKey) => prevKey + 1);
+  useEffect(() => {
+    if (!recipeLoading && recipeById) {
+      let newIngredients = [];
+      for (let i = 1; i <= 10; i++) {
+        const ingredientKey = "strIngredient" + i;
+        const mesuerementKey = "strMeasure" + i;
+        if (
+          recipeById[ingredientKey] !== null &&
+          recipeById[ingredientKey] !== ""
+        ) {
+          newIngredients.push(
+            recipeById[mesuerementKey] + ", " + recipeById[ingredientKey]
+          );
+        }
+      }
+      setMyIngredients(newIngredients);
     }
-  };
+  }, [recipeById, recipeLoading]);
 
   const navigate = useNavigate();
   return (
@@ -53,25 +47,60 @@ function DisplayRecipe({
         {!recipeLoading && recipeById && (
           <Modal openModal={openModal}>
             <>
-              <p>{recipeById.strInstructions}</p>
               <img
-                src={recipeById.strMealThumb}
+                src={
+                  !recipeById.strMealThumb
+                    ? `${process.env.PUBLIC_URL}/noimage.png`
+                    : recipeById.strMealThumb
+                }
                 style={{ width: "30%" }}
                 alt={recipeById.idMeal}
               />
-              <br />
-              {recipeById.strMeal}
-              <br />
+              <h2 style={{ color: "#5f3dc4" }}>{recipeById.strMeal}</h2>
+              <h3>Ingredients</h3>
+              <div className={styles.ingredientsContainer}>
+                {ingredients.map((ingredient, index) => (
+                  <div className={styles.ingredientItem} key={index}>
+                    {ingredient}
+                  </div>
+                ))}
+              </div>
+              <h3>Instructions</h3>
+              <div style={{ whiteSpace: "pre-wrap" }}>
+                {recipeById.strInstructions}
+              </div>
             </>
-            <button onClick={handlerAddMyFavourite}>Add to Favorite</button>
-            <button
-              onClick={() => {
-                handlerCloseModal();
-                navigate("/search");
-              }}
-            >
-              Close
-            </button>
+            {addMyFavouriteLoading && (
+              <>
+                <br />
+                <div>
+                  <BeatLoader color="#5f3dc4" />
+                </div>
+                <br />
+              </>
+            )}
+            {!addMyFavouriteLoading && (
+              <>
+                {" "}
+                <button
+                  onClick={async () => {
+                    await handlerAddMyFavourite();
+                    handlerCloseModal();
+                    navigate("/search");
+                  }}
+                >
+                  Add to Favorite
+                </button>
+                <button
+                  onClick={() => {
+                    handlerCloseModal();
+                    navigate("/search");
+                  }}
+                >
+                  Close
+                </button>{" "}
+              </>
+            )}
           </Modal>
         )}
       </div>

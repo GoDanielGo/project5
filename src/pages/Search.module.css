@@ -1,13 +1,15 @@
 select,
-input,
-button {
-  margin: 5px;
+button,
+input {
+  box-sizing: border-box;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
+input {
+  padding: 10px;
+}
 button {
   background-color: #a687fa;
   color: #fff;

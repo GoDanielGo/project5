@@ -1,7 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Modal from "./Modal";
+import { Modal } from "./Modal";
 import styles from "./DisplayMyRecipe.module.css";
 import { BeatLoader } from "react-spinners";
+import { useEffect, useState } from "react";
 
 function DisplayMyFavorite({
   openModal,
@@ -9,28 +10,32 @@ function DisplayMyFavorite({
   myFavoriteList,
   deleteMyFavorite,
   deleteMyFavoriteLoading,
+  recipeById,
+  recipeLoading,
 }) {
-  const { idMeal } = useParams();
-  console.log(myFavoriteList);
-  console.log(idMeal);
-  const recipeById = myFavoriteList.find((item) => item.idMeal === idMeal);
-  console.log(recipeById);
+  const [ingredients, setMyIngredients] = useState([]);
+  const { id } = useParams();
   const navigate = useNavigate();
-  let ingredients = [];
-  const filterIngerdients = (recipeById) => {
-    for (let i = 1; i <= 10; i++) {
-      const ingredientKey = "strIngredient" + i;
-      if (
-        (recipeById[ingredientKey] !== null) &
-        (recipeById[ingredientKey] !== "")
-      ) {
-        ingredients.push(recipeById[ingredientKey]);
-      }
-    }
-    return ingredients;
-  };
 
-  console.log("ingredients", filterIngerdients(recipeById));
+  useEffect(() => {
+    if (!recipeLoading && recipeById) {
+      let newIngredients = [];
+      for (let i = 1; i <= 10; i++) {
+        const ingredientKey = "strIngredient" + i;
+        const mesuerementKey = "strMeasure" + i;
+        if (
+          recipeById[ingredientKey] !== null &&
+          recipeById[ingredientKey] !== ""
+        ) {
+          newIngredients.push(
+            recipeById[mesuerementKey] + ", " + recipeById[ingredientKey]
+          );
+        }
+      }
+      setMyIngredients(newIngredients);
+    }
+  }, [recipeById, recipeLoading]);
+
   return (
     <div
       style={{
@@ -40,66 +45,67 @@ function DisplayMyFavorite({
         margin: "auto",
       }}
     >
-      <Modal openModal={openModal}>
-        <>
-          <img
-            src={
-              !recipeById.strMealThumb
-                ? `${process.env.PUBLIC_URL}/noimage.png`
-                : recipeById.strMealThumb
-            }
-            style={{ width: "30%" }}
-            alt={recipeById.idMeal}
-          />
-          <br />
-          <h2 style={{ color: "#5f3dc4" }}>{recipeById.strMeal}</h2>
-          <h3>Ingredients</h3>
-          <div className={styles.ingredientsContainer}>
-            {ingredients.map((ingredient, index) => (
-              <div className={styles.ingredientItem} key={index}>
-                {ingredient}
-              </div>
-            ))}
-          </div>
-          <h3>Instructions</h3>
-          <div style={{ whiteSpace: "pre-wrap" }}>
-            {recipeById.strInstructions}
-          </div>
-        </>
-        <br />
-        {deleteMyFavoriteLoading && (
+      {!recipeLoading && recipeById && (
+        <Modal openModal={openModal}>
           <>
-            <div>
-              <BeatLoader color="#5f3dc4" />
-            </div>
+            <img
+              src={
+                !recipeById.strMealThumb
+                  ? `${process.env.PUBLIC_URL}/noimage.png`
+                  : recipeById.strMealThumb
+              }
+              style={{ width: "30%" }}
+              alt={recipeById.idMeal}
+            />
             <br />
+            <h2 style={{ color: "#5f3dc4" }}>{recipeById.strMeal}</h2>
+            <h3>Ingredients</h3>
+            <div className={styles.ingredientsContainer}>
+              {ingredients.map((ingredient, index) => (
+                <div className={styles.ingredientItem} key={index}>
+                  {ingredient}
+                </div>
+              ))}
+            </div>
+            <h3>Instructions</h3>
+            <div style={{ whiteSpace: "pre-wrap" }}>
+              {recipeById.strInstructions}
+            </div>
           </>
-        )}
-        {!deleteMyFavoriteLoading && (
-          <>
-            <button>Edit</button>
-            <button
-              onClick={async () => {
-                await deleteMyFavorite(recipeById.idMeal);
-                if (!deleteMyFavoriteLoading) {
+          <br />
+          {deleteMyFavoriteLoading && (
+            <>
+              <div>
+                <BeatLoader color="#5f3dc4" />
+              </div>
+              <br />
+            </>
+          )}
+          {!deleteMyFavoriteLoading && (
+            <>
+              <button
+                onClick={async () => {
+                  await deleteMyFavorite(id);
+                  if (!deleteMyFavoriteLoading) {
+                    handlerCloseModal();
+                    navigate("/favorite");
+                  }
+                }}
+              >
+                Remove from My Favorite
+              </button>
+              <button
+                onClick={() => {
                   handlerCloseModal();
                   navigate("/favorite");
-                }
-              }}
-            >
-              Delete
-            </button>
-            <button
-              onClick={() => {
-                handlerCloseModal();
-                navigate("/favorite");
-              }}
-            >
-              Close
-            </button>
-          </>
-        )}
-      </Modal>
+                }}
+              >
+                Close
+              </button>
+            </>
+          )}
+        </Modal>
+      )}
     </div>
   );
 }
