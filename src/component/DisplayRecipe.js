@@ -66,7 +66,7 @@ function DisplayRecipe({
                 ))}
               </div>
               <h3>Instructions</h3>
-              <div style={{ whiteSpace: "pre-wrap" }}>
+              <div className={styles.instructions}>
                 {recipeById.strInstructions}
               </div>
             </>
@@ -81,8 +81,8 @@ function DisplayRecipe({
             )}
             {!addMyFavouriteLoading && (
               <>
-                {" "}
                 <button
+                  style={{ margin: "15px", padding: "15px" }}
                   onClick={async () => {
                     await handlerAddMyFavourite();
                     handlerCloseModal();
@@ -92,6 +92,7 @@ function DisplayRecipe({
                   Add to Favorite
                 </button>
                 <button
+                  style={{ padding: "15px" }}
                   onClick={() => {
                     handlerCloseModal();
                     navigate("/search");

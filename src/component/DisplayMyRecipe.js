@@ -41,7 +41,6 @@ function DisplayMyRecipe({
 
   const handlerOpenEditModal = () => setOpenEditModal(true);
 
-  // console.log("ingredients", filterIngerdients(recipeById));
   return (
     <div
       style={{
@@ -73,7 +72,7 @@ function DisplayMyRecipe({
             ))}
           </div>
           <h3>Instructions</h3>
-          <div style={{ whiteSpace: "pre-wrap" }}>
+          <div className={styles.instructions}>
             {recipeById.strInstructions}
           </div>
         </>
@@ -89,6 +88,7 @@ function DisplayMyRecipe({
         {!deleteMyRecipeLoading && (
           <>
             <button
+              style={{ margin: "15px", padding: "15px" }}
               onClick={() => {
                 setEditRecipe(true);
                 handlerEditMyRecipe(recipeById);
@@ -98,6 +98,7 @@ function DisplayMyRecipe({
               Edit
             </button>
             <button
+              style={{ padding: "15px" }}
               onClick={async () => {
                 await deleteMyRecipe(recipeById.idMeal);
                 if (!deleteMyRecipeLoading) {
@@ -109,6 +110,7 @@ function DisplayMyRecipe({
               Delete
             </button>
             <button
+              style={{ margin: "15px", padding: "15px" }}
               onClick={() => {
                 handlerCloseModal();
                 navigate("/myrecipe");

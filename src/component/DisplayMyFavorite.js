@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 function DisplayMyFavorite({
   openModal,
   handlerCloseModal,
-  myFavoriteList,
   deleteMyFavorite,
   deleteMyFavoriteLoading,
   recipeById,
@@ -68,7 +67,7 @@ function DisplayMyFavorite({
               ))}
             </div>
             <h3>Instructions</h3>
-            <div style={{ whiteSpace: "pre-wrap" }}>
+            <div className={styles.instructions}>
               {recipeById.strInstructions}
             </div>
           </>
@@ -84,6 +83,7 @@ function DisplayMyFavorite({
           {!deleteMyFavoriteLoading && (
             <>
               <button
+                style={{ margin: "15px", padding: "15px" }}
                 onClick={async () => {
                   await deleteMyFavorite(id);
                   if (!deleteMyFavoriteLoading) {
@@ -95,6 +95,7 @@ function DisplayMyFavorite({
                 Remove from My Favorite
               </button>
               <button
+                style={{ padding: "15px" }}
                 onClick={() => {
                   handlerCloseModal();
                   navigate("/favorite");

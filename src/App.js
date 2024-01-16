@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Search from "./pages/Search";
 import RootLayout from "./Layout/RootLayout";
 import { useEffect, useState } from "react";
@@ -30,6 +30,16 @@ const initialRecipeState = {
   idMeal: "",
 };
 
+function DefaultPage() {
+  const location = useLocation();
+  return (
+    <p>
+      You have enter an invalid page -{" "}
+      <span style={{ color: "red" }}>{location.pathname}</span>
+    </p>
+  );
+}
+
 function App() {
   const [searchBy, setSearchBy] = useState("search.php?s=");
   const [foodName, setFoodName] = useState("");
@@ -52,7 +62,6 @@ function App() {
   const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
-    console.log("Initial load");
     handlerClear();
   }, []);
 
@@ -82,25 +91,31 @@ function App() {
   const handlerFormStatus = (status) => setFormStatus(status);
 
   const searchByName = async () => {
+    let searchByNameMessage = "";
     try {
       setDisplayLoading(true);
       const response = await api.get(`${searchBy}${foodName}`);
       setSearchResult(response.data.meals);
     } catch (error) {
+      searchByNameMessage = error.message;
       console.log("error", error.message);
     } finally {
+      searchByNameMessage && alert(searchByNameMessage);
       setDisplayLoading(false);
     }
   };
 
   const searchRecipe = async (id) => {
+    let searchRecipeMessage = "";
     try {
       setRecipeLoading(true);
       const response = await api.get(`lookup.php?i=${id}`);
       setRecipeById(response.data.meals[0]);
     } catch (error) {
+      searchRecipeMessage = error.message;
       console.log("error", error.message);
     } finally {
+      searchRecipeMessage && alert(searchRecipeMessage);
       setRecipeLoading(false);
     }
   };
@@ -135,25 +150,31 @@ function App() {
   };
 
   const getMyFavourite = async () => {
+    let getMyFavoriteMessage = "";
     try {
       setDisplayLoading(true);
       const response = await myRecipeApi.get("/favorites");
       setMyFavoriteList(response.data);
     } catch (error) {
       console.log("Error", error.message);
+      getMyFavoriteMessage = error.message;
     } finally {
+      getMyFavoriteMessage && alert(getMyFavoriteMessage);
       setDisplayLoading(false);
     }
   };
 
   const searchMyRecipe = async () => {
+    let searchMyRecipeMessage = "";
     try {
       setDisplayLoading(true);
       const response = await myRecipeApi.get("/myrecipe");
       setMyRecipeList(response.data);
     } catch (error) {
+      searchMyRecipeMessage = error.message;
       console.log("Error", error.message);
     } finally {
+      searchMyRecipeMessage && alert(searchMyRecipeMessage);
       setDisplayLoading(false);
     }
   };
@@ -306,7 +327,6 @@ function App() {
               }
             />
           </Route>
-          {/* <Route path="favorite" element={<Favorite />} /> */}
           <Route
             path="favorite"
             element={
@@ -327,7 +347,6 @@ function App() {
                   openModal={openModal}
                   handlerCloseModal={handlerCloseModal}
                   recipeLoading={recipeLoading}
-                  myFavoriteList={myFavoriteList}
                   deleteMyFavorite={deleteMyFavorite}
                   recipeById={recipeById}
                   deleteMyFavoriteLoading={deleteMyFavoriteLoading}
@@ -376,7 +395,7 @@ function App() {
               }
             />
           </Route>
-          <Route path="login" element={<Login />}></Route>
+          <Route path="*" element={<DefaultPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

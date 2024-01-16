@@ -138,12 +138,16 @@ function EditMyRecipe({
             {!editLoading && (
               <>
                 <span>
-                  <button style={{ width: "200px" }}>Save</button>
+                  <button
+                    style={{ width: "200px", margin: "15px", padding: "15px" }}
+                  >
+                    Save
+                  </button>
                   <button
                     onClick={() => {
                       setOpenEditModal(false);
                     }}
-                    style={{ width: "200px" }}
+                    style={{ width: "200px", padding: "15px" }}
                   >
                     Close
                   </button>

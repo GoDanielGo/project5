@@ -10,8 +10,12 @@
 }
 .topic img {
   transform: scale(1);
-  transition: filter 0.3s ease-in-out;
 }
 .topic img:hover {
   transform: scale(1.15);
+  border-radius: 8px;
+}
+
+img {
+  border-radius: 8px;
 }

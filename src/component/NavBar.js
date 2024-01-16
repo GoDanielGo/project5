@@ -9,7 +9,7 @@ function NavBar({ setIsLogin }) {
   const navigate = useNavigate();
   const handleLogOut = () => {
     setIsLogin(false);
-    alert("see you again");
+    alert("Logged Out!");
     navigate("/");
   };
   return (

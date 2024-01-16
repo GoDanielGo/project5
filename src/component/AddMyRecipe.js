@@ -147,8 +147,11 @@ function AddMyRecipe({
               )}
               {!addMyRecipeLoading && (
                 <>
-                  <button>Add</button>
+                  <button style={{ margin: "15px", padding: "15px" }}>
+                    Add Recipe
+                  </button>
                   <button
+                    style={{ padding: "15px" }}
                     onClick={() => {
                       handlerCloseModal();
                       handlerFormStatus(false);
