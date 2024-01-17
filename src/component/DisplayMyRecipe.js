@@ -67,7 +67,13 @@ function DisplayMyRecipe({
           <div className={styles.ingredientsContainer}>
             {ingredients.map((ingredient, index) => (
               <div className={styles.ingredientItem} key={index}>
-                {ingredient}
+                <a
+                  href={`https://www.fairprice.com.sg/search?query=${ingredient}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {ingredient}
+                </a>
               </div>
             ))}
           </div>

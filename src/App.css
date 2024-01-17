@@ -27,3 +27,11 @@ body {
   background-image: linear-gradient(to right, #e5dbff, #f3f0ff);
   padding: 10px 20px;
 }
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  color: #aa8ffc;
+}

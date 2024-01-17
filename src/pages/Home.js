@@ -1,9 +1,9 @@
 import styles from "./Home.css";
 
 function Home() {
-  const image1 = require("../Images/carbonara1.jpg");
-  const image2 = require("../Images/Chicken-Kebabs1.jpg");
-  const image3 = require("../Images/vegan-lasagna1.jpg");
+  const image1 = `${process.env.PUBLIC_URL}/carbonara1.jpg`;
+  const image2 = `${process.env.PUBLIC_URL}/Chicken-Kebabs1.jpg`;
+  const image3 = `${process.env.PUBLIC_URL}/vegan-lasagna1.jpg`;
   return (
     <>
       <div className={styles.para}>

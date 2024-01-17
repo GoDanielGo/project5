@@ -12,7 +12,7 @@ function DisplayRecipe({
   handlerAddMyFavourite,
   addMyFavouriteLoading,
 }) {
-  const [ingredients, setMyIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
 
   useEffect(() => {
     if (!recipeLoading && recipeById) {
@@ -24,12 +24,17 @@ function DisplayRecipe({
           recipeById[ingredientKey] !== null &&
           recipeById[ingredientKey] !== ""
         ) {
-          newIngredients.push(
-            recipeById[mesuerementKey] + ", " + recipeById[ingredientKey]
-          );
+          newIngredients.push({
+            ingredientName: recipeById[ingredientKey],
+            ingredientMeasure: recipeById[mesuerementKey],
+            ingredientImage:
+              "https://www.themealdb.com/images/ingredients/" +
+              recipeById[ingredientKey] +
+              "-Small.png",
+          });
         }
       }
-      setMyIngredients(newIngredients);
+      setIngredients(newIngredients);
     }
   }, [recipeById, recipeLoading]);
 
@@ -61,7 +66,20 @@ function DisplayRecipe({
               <div className={styles.ingredientsContainer}>
                 {ingredients.map((ingredient, index) => (
                   <div className={styles.ingredientItem} key={index}>
-                    {ingredient}
+                    {
+                      <a
+                        href={`https://www.fairprice.com.sg/search?query=${ingredient.ingredientName}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={ingredient.ingredientImage}
+                          alt={"Ingredient image" + index}
+                        />
+                      </a>
+                    }
+                    <br />
+                    {ingredient.ingredientMeasure},{ingredient.ingredientName}
                   </div>
                 ))}
               </div>
